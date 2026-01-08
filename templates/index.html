@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Energi - Tugas Besar</title>
+    <style>
+        body { font-family: sans-serif; margin: 50px; line-height: 1.6; }
+        .container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Prediksi Bidang Energi</h2>
+        <form method="POST">
+            <label>Masukkan Variabel X (Contoh: Intensitas Cahaya):</label>
+            <input type="number" step="any" name="variabel_1" required>
+            
+            <label>Masukkan Variabel Y (Contoh: Kapasitas Panel):</label>
+            <input type="number" step="any" name="variabel_2" required>
+            
+            <button type="submit">Hitung Prediksi</button>
+        </form>
+
+        {% if prediction is not none %}
+            <div style="margin-top: 20px; padding: 10px; background: #e9ecef;">
+                <h3>Hasil Prediksi: {{ prediction }} kWh</h3>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
