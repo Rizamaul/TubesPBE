@@ -1,32 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Model Energi - Tugas Besar</title>
-    <style>
-        body { font-family: sans-serif; margin: 50px; line-height: 1.6; }
-        .container { max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; }
-    </style>
+    <title>PeatFire Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container">
-        <h2>Prediksi Bidang Energi</h2>
-        <form method="POST">
-            <label>Masukkan Variabel X (Contoh: Intensitas Cahaya):</label>
-            <input type="number" step="any" name="variabel_1" required>
-            
-            <label>Masukkan Variabel Y (Contoh: Kapasitas Panel):</label>
-            <input type="number" step="any" name="variabel_2" required>
-            
-            <button type="submit">Hitung Prediksi</button>
-        </form>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold text-success">Dinamika Energi Lahan Gambut</h1>
+            <p class="lead">Penentuan Analitik Waktu Penyalaan Kritis (E<sub>net</sub> = 0)</p>
+        </div>
 
-        {% if prediction is not none %}
-            <div style="margin-top: 20px; padding: 10px; background: #e9ecef;">
-                <h3>Hasil Prediksi: {{ prediction }} kWh</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm p-4">
+                    <form method="POST">
+                        <h5 class="mb-3">Input Data Kalibrasi</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Array Hari (t):</label>
+                            <input type="text" name="t_array" class="form-control" value="{{ d_t }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Array Kadar Air (%):</label>
+                            <input type="text" name="m_array" class="form-control" value="{{ d_m }}">
+                        </div>
+                        
+                        <hr>
+                        <h5 class="mb-3">Parameter Hujan</h5>
+                        <div class="mb-3">
+                            <label class="form-label">Intensitas Hujan (R<sub>in</sub>):</label>
+                            <input type="number" step="0.1" name="r_in" class="form-control" value="0">
+                            <small class="text-muted">Meningkatkan % kadar air secara instan</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Terjadi pada Hari ke-:</label>
+                            <input type="number" step="0.1" name="t_hujan" class="form-control" value="5">
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">Jalankan Analisis</button>
+                    </form>
+                </div>
             </div>
-        {% endif %}
+
+            <div class="col-md-8">
+                {% if results %}
+                    {% if results.error %}
+                        <div class="alert alert-danger">{{ results.error }}</div>
+                    {% else %}
+                        <div class="card shadow-sm p-4 mb-4">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h6>k<sub>base</sub></h6>
+                                    <h4 class="text-primary">{{ results.kb }}</h4>
+                                </div>
+                                <div class="col-4">
+                                    <h6>k<sub>solar</sub></h6>
+                                    <h4 class="text-primary">{{ results.ks }}</h4>
+                                </div>
+                                <div class="col-4">
+                                    <h6>Waktu Kritis (t<sub>crit</sub>)</h6>
+                                    <h4 class="text-danger">{{ results.tcrit }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {% if graph_url %}
+                        <div class="card shadow-sm p-2">
+                            <img src="data:image/png;base64,{{ graph_url }}" class="img-fluid">
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info text-center">Silakan masukkan data dan klik tombol Analisis.</div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </body>
 </html>
